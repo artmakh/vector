@@ -9,11 +9,8 @@ on:
       - 'distribution/install.sh'
   workflow_dispatch:
 
-
 jobs:
   test-install:
-    needs:
-      - sync-install
     runs-on: ubuntu-20.04
     steps:
       - run: sudo apt-get install --yes curl bc

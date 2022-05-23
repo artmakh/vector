@@ -516,23 +516,3 @@ jobs:
           release: "any-version"
           republish: "true"
           file: "target/artifacts/vector-${{ env.VECTOR_VERSION }}-1.armv7.rpm"
-
-  nightly-failure:
-    name: nightly-failure
-    if: failure() && github.ref == 'refs/heads/master'
-    needs:
-      - build-x86_64-unknown-linux-gnu-debug-tarball
-      - build-x86_64-unknown-linux-gnu-packages
-      - build-x86_64-unknown-linux-musl-packages
-      - build-aarch64-unknown-linux-musl-packages
-      - build-aarch64-unknown-linux-gnu-packages
-      - build-x86_64-apple-darwin-packages
-      - build-x86_64-pc-windows-msvc-packages
-      - build-armv7-unknown-linux-gnueabihf-packages
-      - build-armv7-unknown-linux-musleabihf-packages
-      - release-docker
-      - release-cloudsmith
-      - deb-verify
-      - rpm-verify
-      - osx-verify
-    runs-on: ubuntu-20.04
