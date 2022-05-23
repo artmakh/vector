@@ -20,4 +20,5 @@ apt-get update
 # needed by onig_sys
 apt-get install -y \
       libclang1-9 \
-      llvm-9
+      llvm-9 \
+      libsasl2-dev
