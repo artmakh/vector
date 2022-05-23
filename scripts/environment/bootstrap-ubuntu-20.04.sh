@@ -16,8 +16,8 @@ apt install --yes \
 
 apt upgrade --yes
 
-curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
-curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
+curl -fsSL https://deb.nodesource.com/setup_16.x | bash -
+curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add -
 
 # Deps
 apt install --yes \
