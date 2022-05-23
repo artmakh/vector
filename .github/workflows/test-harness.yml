@@ -81,35 +81,6 @@ jobs:
       if: steps.deb-cache.outputs.cache-hit != 'true'
       run: PASS_FEATURES=default ./scripts/docker-run.sh builder-x86_64-unknown-linux-gnu make build-archive package-deb
 
-    - name: Invoke test harness
-      uses: docker://timberiodev/vector-test-harness:latest
-      with:
-        args: |
-          bash -o pipefail -xc "cd /vector-test-harness \
-          && bin/test $(echo '${{ github.event.comment.body }}' | head -n 1 | sed 's|^/test ||')"
-      env:
-        GENERATE_SSH_KEY: true
-        VECTOR_TEST_VECTOR_DEB_PATH: '${{ github.workspace }}/target/artifacts/vector-${{ env.VECTOR_VERSION }}-amd64.deb'
-        VECTOR_TEST_USER_ID: 'gha_${{ github.event.issue.number }}'
-        VECTOR_TEST_RESULTS_S3_BUCKET_NAME: test-results.vector.dev
-        VECTOR_TEST_SUBJECT: vector
-        VECTOR_VERSION_TO_TEST: '${{ steps.cloned-repo-info.outputs.test_harness_vector_version }}'
-        AWS_ACCESS_KEY_ID: '${{ secrets.TEST_HARNESS_AWS_ACCESS_KEY_ID }}'
-        AWS_SECRET_ACCESS_KEY: '${{ secrets.TEST_HARNESS_AWS_SECRET_ACCESS_KEY }}'
-        AWS_DEFAULT_REGION: '${{ secrets.AWS_DEFAULT_REGION }}'
-    - name: Gather test harness execution results
-      uses: docker://timberiodev/vector-test-harness:latest
-      with:
-        args: |
-          bash -o pipefail -xc "cd /vector-test-harness \
-          && bin/compare -s vector -c default -v nightly/latest -v ${{ steps.cloned-repo-info.outputs.test_harness_vector_version }} $(echo '${{ github.event.comment.body }}' | head -n 1 | sed 's|^/test ||') | tee \"$GITHUB_WORKSPACE/output\""
-      env:
-        GENERATE_SSH_KEY: true
-        VECTOR_TEST_RESULTS_S3_BUCKET_NAME: test-results.vector.dev
-        AWS_ACCESS_KEY_ID: '${{ secrets.TEST_HARNESS_RESULTS_AWS_ACCESS_KEY_ID }}'
-        AWS_SECRET_ACCESS_KEY: '${{ secrets.TEST_HARNESS_RESULTS_AWS_SECRET_ACCESS_KEY }}'
-        AWS_DEFAULT_REGION: '${{ secrets.TEST_HARNESS_AWS_DEFAULT_REGION }}'
-
     - name: Post a comment with the results
       uses: actions/github-script@v6
       with:

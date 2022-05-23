@@ -350,24 +350,3 @@ jobs:
       - name: Check Markdown
         if: needs.changes.outputs.markdown == 'true'
         run: make check-markdown
-  master-failure:
-    name: master-failure
-    if: failure() && github.ref == 'refs/heads/master'
-    needs:
-      - changes
-      - cross-linux
-      - test-misc
-      - test-linux
-      - test-mac
-      - test-windows
-      - test-vrl
-      - check-component-features
-      - checks
-    runs-on: ubuntu-20.04
-    steps:
-    - name: Discord notification
-      env:
-        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-      uses: Ilshidur/action-discord@0.3.2
-      with:
-        args: "Master tests failed: <https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}>"

@@ -28,7 +28,6 @@ env:
   AWS_SECRET_ACCESS_KEY: "dummy"
   CONTAINER_TOOL: "docker"
   DD_ENV: "ci"
-  DD_API_KEY: ${{ secrets.DD_API_KEY }}
   RUST_BACKTRACE: full
   RUST_TEST_THREADS: 1
   TEST_LOG: vector=debug
@@ -61,10 +60,6 @@ jobs:
           - test: 'aws'
           - test: 'azure'
           - test: 'clickhouse'
-          - test: 'datadog-agent'
-          - test: 'datadog-logs'
-          - test: 'datadog-metrics'
-          - test: 'datadog-traces'
           - test: 'dnstap'
           - test: 'docker-logs'
           - test: 'elasticsearch'
@@ -93,7 +88,6 @@ jobs:
       - run: sudo npm -g install @datadog/datadog-ci
       - run: make test-integration-${{ matrix.test }}
         env:
-          TEST_DATADOG_API_KEY: ${{ secrets.CI_TEST_DATADOG_API_KEY }}
           SPLUNK_VERSION: ${{ matrix.env.SPLUNK_VERSION }}
       - name: Upload test results
         run: scripts/upload-test-results.sh
@@ -109,18 +103,3 @@ jobs:
     steps:
       - name: validate
         run: echo "OK"
-
-  master-failure:
-    name: master-failure
-    if: failure() && github.ref == 'refs/heads/master'
-    needs:
-      - cancel-previous
-      - test-integration-check
-    runs-on: ubuntu-20.04
-    steps:
-    - name: Discord notification
-      env:
-        DISCORD_WEBHOOK: ${{ secrets.DISCORD_WEBHOOK }}
-      uses: Ilshidur/action-discord@0.3.2
-      with:
-        args: "Master integration tests failed: <https://github.com/${{github.repository}}/actions/runs/${{github.run_id}}>"
