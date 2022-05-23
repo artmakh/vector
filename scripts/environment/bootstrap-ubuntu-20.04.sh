@@ -34,8 +34,6 @@ apt install --yes \
     libssl-dev \
     llvm \
     locales \
-    nodejs \
-    npm \
     pkg-config \
     python3-pip \
     rename \
@@ -43,8 +41,7 @@ apt install --yes \
     ruby-bundler \
     shellcheck \
     sudo \
-    wget \
-    yarn
+    wget
 
 # Cue
 TEMP=$(mktemp -d)
