@@ -11,9 +11,13 @@ apt update --yes
 apt install --yes \
   software-properties-common \
   apt-utils \
-  apt-transport-https
+  apt-transport-https \
+  curl
 
 apt upgrade --yes
+
+curl -fsSL https://deb.nodesource.com/setup_16.x | sudo -E bash -
+curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | sudo apt-key add -
 
 # Deps
 apt install --yes \
@@ -34,6 +38,7 @@ apt install --yes \
     libssl-dev \
     llvm \
     locales \
+    nodejs \
     pkg-config \
     python3-pip \
     rename \
@@ -41,7 +46,8 @@ apt install --yes \
     ruby-bundler \
     shellcheck \
     sudo \
-    wget
+    wget \
+    yarn
 
 # Cue
 TEMP=$(mktemp -d)
