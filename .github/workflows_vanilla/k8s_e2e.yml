@@ -3,9 +3,8 @@ name: K8S E2E Suite
 on:
   workflow_dispatch:
   push:
-    tags:
-      - v0.*
-      - v1.*
+    branches:
+      - master
     paths:
       - ".github/workflows/k8s_e2e.yml"
       - ".cargo/**"

@@ -217,6 +217,57 @@ jobs:
         if: ${{ needs.cross-linux.result != 'success' }}
         run: exit 1
 
+  test-mac:
+    name: Unit - Mac
+    # Full CI suites for this platform were only recently introduced.
+    # Some failures are permitted until we can properly correct them.
+    continue-on-error: true
+    runs-on: macos-latest
+    needs: changes
+    env:
+      CARGO_INCREMENTAL: 0
+    if: ${{ needs.changes.outputs.source == 'true' }}
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions/cache@v3
+        name: Cache Cargo registry + index
+        with:
+          path: |
+            ~/.cargo/bin/
+            ~/.cargo/registry/index/
+            ~/.cargo/registry/cache/
+            ~/.cargo/git/db/
+          key: ${{ runner.os }}-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-cargo-
+      - run: bash scripts/environment/bootstrap-macos-10.sh
+      - run: bash scripts/environment/prepare.sh
+      - run: echo "::add-matcher::.github/matchers/rust.json"
+      - run: make test
+      - run: make test-behavior
+
+  test-windows:
+    name: Unit - Windows
+    runs-on: [windows, test-runner]
+    needs: changes
+    if: ${{ needs.changes.outputs.source == 'true' }}
+    steps:
+      - uses: actions/checkout@v3
+      - run: .\scripts\environment\bootstrap-windows-2019.ps1
+      - run: make test
+
+  test-vrl:
+    name: VRL - Linux
+    continue-on-error: true
+    runs-on: [linux, test-runner]
+    needs: changes
+    if: ${{ needs.changes.outputs.source == 'true' || needs.changes.outputs.cue == 'true' }}
+    steps:
+      - uses: actions/checkout@v3
+      - run: sudo -E bash scripts/environment/bootstrap-ubuntu-20.04.sh
+      - run: bash scripts/environment/prepare.sh
+      - run: make test-vrl
+
   check-component-features:
     name: Component Features - Linux
     runs-on: [linux, test-runner]

@@ -3,9 +3,8 @@ name: Integration Test Suite
 on:
   workflow_dispatch:
   push:
-    tags:
-      - v0.*
-      - v1.*
+    branches:
+      - master
     paths:
       - ".github/workflows/integration-test.yml"
       - ".cargo/**"

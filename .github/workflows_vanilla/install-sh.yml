@@ -1,0 +1,18 @@
+name: Update install.sh Suite
+
+on:
+  push:
+    branches:
+      - master
+    paths:
+      - '.github/workflows/install-sh.yml'
+      - 'distribution/install.sh'
+  workflow_dispatch:
+
+jobs:
+  test-install:
+    runs-on: ubuntu-20.04
+    steps:
+      - run: sudo apt-get install --yes curl bc
+      - run:  curl --proto '=https' --tlsv1.2 -sSf https://sh.vector.dev | bash -s -- -y
+      - run: ~/.vector/bin/vector --version
